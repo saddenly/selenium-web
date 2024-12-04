@@ -4,8 +4,11 @@ import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.utils.factory.DeviceType;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
@@ -39,10 +42,12 @@ public class HomePage extends HomePageBase {
     }
 
     public void agreeToCookies() {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        driver.switchTo().frame("sp_message_iframe_1192447");
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        getDriver().switchTo().frame("sp_message_iframe_1192447");
+        wait.until(ExpectedConditions.elementToBeClickable(agreeToCookiesButton));
+
         agreeToCookiesButton.click();
-        driver.switchTo().parentFrame();
+        getDriver().switchTo().parentFrame();
         agreeToCookiesSpan.click();
     }
 
