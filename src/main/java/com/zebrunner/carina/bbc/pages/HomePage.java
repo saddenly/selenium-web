@@ -4,14 +4,12 @@ import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.utils.factory.DeviceType;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
 
 import java.time.Duration;
-import java.util.List;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = HomePageBase.class)
 public class HomePage extends HomePageBase {
@@ -42,7 +40,9 @@ public class HomePage extends HomePageBase {
     }
 
     public void agreeToCookies() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
+                .withTimeout(Duration.ofSeconds(10))
+                .pollingEvery(Duration.ofSeconds(1));
         getDriver().switchTo().frame("sp_message_iframe_1192447");
         wait.until(ExpectedConditions.elementToBeClickable(agreeToCookiesButton));
 
