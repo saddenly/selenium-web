@@ -14,37 +14,37 @@ public class HomePage extends HomePageBase {
     @FindBy(xpath = "//button[@aria-label='Search BBC']")
     private ExtendedWebElement buttonSearchForm;
 
-    @FindBy(css = "input[data-testid='search-input-field']")
+    @FindBy(xpath = "//input[@data-testid='search-input-field']")
     private ExtendedWebElement inputSearchField;
 
-    @FindBy(css = "button[data-testid='search-input-search-button']")
+    @FindBy(xpath = "//button[@data-testid='search-input-search-button']")
     private ExtendedWebElement buttonSearch;
 
-    @FindBy(css = "#notice > div.message-component.message-row.unstack > div:nth-child(2)")
+    @FindBy(xpath = "//button[@aria-label='I agree']")
     private ExtendedWebElement agreeToCookiesButton;
 
-    @FindBy(css = "#bbccookies-continue-button")
+    @FindBy(xpath = "//span[text()='Yes, I agree']")
     private ExtendedWebElement agreeToCookiesSpan;
 
-    @FindBy(css = "#__next > div > nav > section > nav > ul > li")
+    @FindBy(xpath = "//nav[@data-testid='level1-navigation-container']/section/nav/ul/li")
     private List<ExtendedWebElement> navigationItems;
 
     @FindBy(css = "#main-content > article > section:nth-child(1) > div > div.sc-e70150c3-0.fbvxoY > div.sc-93223220-0.bOZIBp > div.sc-93223220-0.sc-e70150c3-1.gPmTJa.fNRFwC > div:nth-child(1)")
     private ExtendedWebElement firstArticle;
 
-    @FindBy(css = "#__next > div > footer > section.sc-b310c64c-0.cUeFDY > div > button")
+    @FindBy(xpath = "//footer//button[text()]")
     private ExtendedWebElement otherLanguagesButton;
 
-    @FindBy(css = "#__next > div > footer > section.sc-b310c64c-0.cUeFDY > div > div > div > div:nth-child(28) > a")
+    @FindBy(xpath = "//a[text()='Russian НА РУССКОМ']")
     private ExtendedWebElement russianLanguageButton;
 
-    @FindBy(css = "#__next > div > header > div > div.sc-28ab61fc-12.kABLhb > div > div:nth-child(2) > a > button")
+    @FindBy(xpath = "//button[@aria-label='Sign In']")
     private ExtendedWebElement loginButton;
 
-    @FindBy(css = "#__next > div > header > div > div.sc-28ab61fc-12.kABLhb > div > div > button")
+    @FindBy(xpath = "//button[text()='Your Account']")
     private ExtendedWebElement profileButton;
 
-    @FindBy(xpath = "//*[@id=\"__next\"]/div/div[6]/div/div[16]/a/button")
+    @FindBy(xpath = "//button[@data-testid='level1NavButton-https://www.bbc.com/newsletters']")
     private ExtendedWebElement newsletterButton;
 
     public HomePage(WebDriver driver) {

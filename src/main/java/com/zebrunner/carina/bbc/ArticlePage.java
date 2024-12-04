@@ -7,19 +7,19 @@ import org.openqa.selenium.support.FindBy;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = ArticlePageBase.class)
 public class ArticlePage extends ArticlePageBase {
-    @FindBy(css = "#main-content > article > div.sc-18fde0d6-0.eeiVGB > h1")
+    @FindBy(xpath = "//div[contains(@data-component, 'headline-block')]/h1")
     private ExtendedWebElement header;
 
-    @FindBy(css = "#main-content > article > div:nth-child(2) > div > div.sc-2b5e3b35-1.jTEdni > time")
+    @FindBy(xpath = "//time")
     private ExtendedWebElement time;
 
-    @FindBy(css = "#main-content > article > div:nth-child(2) > div > div.sc-2b5e3b35-1.jTEdni > div > button")
+    @FindBy(xpath = "//button[@data-testid='saveButton']")
     private ExtendedWebElement saveButton;
 
-    @FindBy(css = "#__next > div > header > div > div.sc-28ab61fc-12.kABLhb > div > div > button")
+    @FindBy(xpath = "//button[text()='Your Account']")
     private ExtendedWebElement profileDropdown;
 
-    @FindBy(css = "#__next > div > header > div > div.sc-28ab61fc-12.kABLhb > div > div > div > div:nth-child(1) > a")
+    @FindBy(xpath = "//a[@href='https://www.bbc.com/saved']")
     private ExtendedWebElement savedButton;
 
     public ArticlePage(WebDriver driver) {

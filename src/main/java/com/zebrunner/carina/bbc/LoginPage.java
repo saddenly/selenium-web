@@ -7,13 +7,13 @@ import org.openqa.selenium.support.FindBy;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = LoginPageBase.class)
 public class LoginPage extends LoginPageBase{
-    @FindBy(css = "#user-identifier-input")
+    @FindBy(xpath = "//input[@data-testid='input']")
     private ExtendedWebElement username;
 
-    @FindBy(css = "#password-input")
+    @FindBy(xpath = "//input[@data-testid='input']")
     private ExtendedWebElement password;
 
-    @FindBy(css = "#submit-button")
+    @FindBy(xpath = "//button[@id='submit-button']")
     private ExtendedWebElement loginButton;
 
     public LoginPage(WebDriver driver) {

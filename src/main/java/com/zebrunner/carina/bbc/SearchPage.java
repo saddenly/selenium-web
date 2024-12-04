@@ -7,7 +7,7 @@ import org.openqa.selenium.support.FindBy;
 
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = SearchPageBase.class)
 public class SearchPage extends SearchPageBase{
-    @FindBy(css = "#main-content > div.sc-32f23d22-0.heeShB > div > div.sc-32f23d22-2.iumrhG > div > div:nth-child(1)")
+    @FindBy(xpath = "//div[@data-testid='liverpool-card']")
     private ExtendedWebElement articles;
 
     public SearchPage(WebDriver driver) {
