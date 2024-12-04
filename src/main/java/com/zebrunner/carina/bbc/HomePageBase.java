@@ -21,8 +21,6 @@ public abstract class HomePageBase extends AbstractPage {
 
     public abstract List<ExtendedWebElement> getNavigationItems();
 
-    public abstract VideoPageBase openVideoPage();
-
     public abstract ArticlePageBase openFirstArticle();
 
     public abstract void changeLanguageToRussian();

@@ -77,11 +77,6 @@ public class HomePage extends HomePageBase {
         return navigationItems;
     }
 
-    public VideoPageBase openVideoPage() {
-        navigationItems.get(9).click();
-        return initPage(driver, VideoPageBase.class);
-    }
-
     public ArticlePageBase openFirstArticle() {
         firstArticle.click();
         return initPage(driver, ArticlePageBase.class);

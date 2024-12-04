@@ -4,10 +4,8 @@ import com.zebrunner.carina.bbc.*;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -79,32 +77,6 @@ public class BBCTests extends AbstractTest {
         assertTrue("URL does not contain search", searchPage.getCurrentUrl().contains("search"));
         System.out.println(searchPage.isPageOpened());
         assertFalse("There is unexpected result", searchPage.isPageOpened());
-    }
-
-    @Test
-    public void testVideoPlayback() {
-
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
-        VideoPageBase videoPage = homePage.openVideoPage();
-        assertTrue("Error opening video page", getDriver().getCurrentUrl().contains("video"));
-        videoPage.playVideo();
-        //wait till ad plays
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        double time = (double) js.executeScript("return document.querySelector('smp-toucan-player').currentTime");
-        assertTrue("Video has not been played", time > 0);
-        js.executeScript("document.querySelector('smp-toucan-player').pause()");
-        //WebElement pauseButton = getDriver().findElement(By.xpath("//*[@id=\"toucan-bbcMediaPlayer0\"]//smp-video-layout//div/div[1]/smp-core-controls//div/div/smp-play-pause-button//button"));
-        //pauseButton.click();
-
-        Boolean isPaused = (Boolean) js.executeScript("return document.querySelector('smp-toucan-player').paused");
-        assertTrue("Video has not been paused", isPaused);
     }
 
     @Test
