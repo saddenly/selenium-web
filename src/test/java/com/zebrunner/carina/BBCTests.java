@@ -6,6 +6,7 @@ import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -14,6 +15,16 @@ import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
 public class BBCTests extends AbstractTest {
+
+    private HomePageBase homePage;
+
+    @BeforeTest
+    public void setup() {
+        homePage = initPage(getDriver(), HomePageBase.class);
+        homePage.open();
+        homePage.agreeToCookies();
+    }
+
     @Test
     public void testOpenPage() {
         HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
@@ -23,10 +34,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testNavigationBar() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
-
         List<ExtendedWebElement> navigationItems = homePage.getNavigationItems();
 
         for (int i = 1; i < navigationItems.size(); i++) {
@@ -56,9 +63,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testOpenSearchPage() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
         homePage.openSearchForm();
         homePage.enterSearchQuery("some");
         SearchPageBase searchPage = homePage.clickSearch();
@@ -68,9 +72,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testInvalidSearchQueryReturnsNothing() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
         homePage.openSearchForm();
         homePage.enterSearchQuery("smdgpisakmfgoskdfnhmdfgpasovm");
         SearchPageBase searchPage = homePage.clickSearch();
@@ -81,10 +82,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testArticlePage(){
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
-
         ArticlePageBase articlePage = homePage.openFirstArticle();
         assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("articles"));
 
@@ -94,18 +91,12 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testLanguageChange() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
         homePage.changeLanguageToRussian();
         assertTrue("Error changing language to russian", getDriver().getCurrentUrl().contains("russian"));
     }
 
     @Test
     public void testLogin() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
         LoginPageBase loginPage = homePage.openLoginPage();
         assertTrue("URL does not contain 'auth'", loginPage.getCurrentUrl().contains("auth"));
 
@@ -115,10 +106,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testNewsletterSubscription() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
-
         LoginPageBase loginPage = homePage.openLoginPage();
         homePage = loginPage.login("rustemandasov6@gmail.com", "Bbc_8584");
         homePage.openSearchForm();
@@ -130,10 +117,6 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testSaveFunctionality() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
-        homePage.agreeToCookies();
-
         LoginPageBase loginPage = homePage.openLoginPage();
         homePage = loginPage.login("rustemandasov6@gmail.com", "Bbc_8584");
         ArticlePageBase articlePage = homePage.openFirstArticle();
