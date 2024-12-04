@@ -1,5 +1,7 @@
-package com.zebrunner.carina.bbc;
+package com.zebrunner.carina.bbc.pages;
 
+import com.zebrunner.carina.bbc.components.Header;
+import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
@@ -11,23 +13,13 @@ public abstract class HomePageBase extends AbstractPage {
         super(driver);
     }
 
-    public abstract void enterSearchQuery(String query);
-
-    public abstract SearchPageBase clickSearch();
-
-    public abstract void openSearchForm();
-
     public abstract void agreeToCookies();
-
-    public abstract List<ExtendedWebElement> getNavigationItems();
 
     public abstract ArticlePageBase openFirstArticle();
 
     public abstract void changeLanguageToRussian();
 
-    public abstract LoginPageBase openLoginPage();
+    public abstract Header getHeader();
 
-    public abstract boolean isProfileButtonVisible();
-
-    public abstract NewsletterPageBase openNewsletterPage();
+    public abstract Navigation getNavigation();
 }

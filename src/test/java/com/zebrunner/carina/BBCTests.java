@@ -1,6 +1,7 @@
 package com.zebrunner.carina;
 
-import com.zebrunner.carina.bbc.*;
+import com.zebrunner.carina.bbc.components.Header;
+import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.By;
@@ -34,7 +35,7 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testNavigationBar() {
-        List<ExtendedWebElement> navigationItems = homePage.getNavigationItems();
+        List<ExtendedWebElement> navigationItems = homePage.getNavigation().getNavigationList();
 
         for (int i = 1; i < navigationItems.size(); i++) {
             String navigationItemText = navigationItems.get(i).getText();
@@ -57,33 +58,37 @@ public class BBCTests extends AbstractTest {
 
             getDriver().navigate().back();
 
-            navigationItems = homePage.getNavigationItems();
+            navigationItems = homePage.getNavigation().getNavigationList();
         }
     }
 
     @Test
     public void testOpenSearchPage() {
-        homePage.openSearchForm();
-        homePage.enterSearchQuery("some");
-        SearchPageBase searchPage = homePage.clickSearch();
+        Header header = homePage.getHeader();
+        header.openSearchMenu();
+        header.enterSearchQuery("some");
+
+        SearchPageBase searchPage = header.clickSearchButton();
         assertTrue("URL does not contain search", searchPage.getCurrentUrl().contains("search"));
         assertTrue("Error opening search page", searchPage.isPageOpened());
     }
 
     @Test
     public void testInvalidSearchQueryReturnsNothing() {
-        homePage.openSearchForm();
-        homePage.enterSearchQuery("smdgpisakmfgoskdfnhmdfgpasovm");
-        SearchPageBase searchPage = homePage.clickSearch();
+        Header header = homePage.getHeader();
+        header.openSearchMenu();
+        header.enterSearchQuery("gsfdhgjhgjkhghgnfgbv");
+
+        SearchPageBase searchPage = header.clickSearchButton();
         assertTrue("URL does not contain search", searchPage.getCurrentUrl().contains("search"));
         System.out.println(searchPage.isPageOpened());
         assertFalse("There is unexpected result", searchPage.isPageOpened());
     }
 
     @Test
-    public void testArticlePage(){
+    public void testArticlePage() {
         ArticlePageBase articlePage = homePage.openFirstArticle();
-        assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("articles"));
+        assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("news"));
 
         assertFalse("Article header is empty", articlePage.getHeaderText().isEmpty());
         assertFalse("Article publication time is empty", articlePage.getPublicationTime().isEmpty());
@@ -97,19 +102,19 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testLogin() {
-        LoginPageBase loginPage = homePage.openLoginPage();
+        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
         assertTrue("URL does not contain 'auth'", loginPage.getCurrentUrl().contains("auth"));
 
         homePage = loginPage.login("rustemandasov6@gmail.com", "Bbc_8584");
-        assertTrue("Profile button is not visible", homePage.isProfileButtonVisible());
+        assertTrue("Profile button is not visible", homePage.getHeader().isProfileButtonVisible());
     }
 
     @Test
     public void testNewsletterSubscription() {
-        LoginPageBase loginPage = homePage.openLoginPage();
+        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
         homePage = loginPage.login("rustemandasov6@gmail.com", "Bbc_8584");
-        homePage.openSearchForm();
-        NewsletterPageBase newsletterPage = homePage.openNewsletterPage();
+
+        NewsletterPageBase newsletterPage = homePage.getHeader().openBurgerMenu().openNewsletterPage();
         newsletterPage.subscribeToNewsletter();
         assertTrue("Confirmation message was not displayed", newsletterPage.getConfirmationMessage().isDisplayed());
         //does not work
@@ -117,7 +122,7 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testSaveFunctionality() {
-        LoginPageBase loginPage = homePage.openLoginPage();
+        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
         homePage = loginPage.login("rustemandasov6@gmail.com", "Bbc_8584");
         ArticlePageBase articlePage = homePage.openFirstArticle();
         articlePage.saveArticle();

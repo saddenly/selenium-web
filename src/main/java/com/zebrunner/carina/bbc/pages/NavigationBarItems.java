@@ -1,4 +1,4 @@
-package com.zebrunner.carina.bbc;
+package com.zebrunner.carina.bbc.pages;
 
 public enum NavigationBarItems {
     HOME("home","/"),

@@ -1,4 +1,4 @@
-package com.zebrunner.carina.bbc;
+package com.zebrunner.carina.bbc.pages;
 
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
