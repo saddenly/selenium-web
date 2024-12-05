@@ -1,16 +1,21 @@
 package com.zebrunner.carina.bbc.components;
 
 import com.zebrunner.carina.bbc.pages.LoginPageBase;
+import com.zebrunner.carina.bbc.pages.SavedItemsPageBase;
 import com.zebrunner.carina.bbc.pages.SearchPageBase;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 
 public class Header extends AbstractUIObject {
     @FindBy(xpath = "//button[@aria-label='Open menu']")
     private ExtendedWebElement burgerButton;
+
+    @FindBy(xpath = "//div[@data-testid='drawer-background']/div")
+    private ExtendedWebElement burgerMenuContainer;
 
     @FindBy(xpath = "//button[@aria-label='Search BBC']")
     private ExtendedWebElement searchMenuButton;
@@ -39,7 +44,7 @@ public class Header extends AbstractUIObject {
 
     public BurgerMenu openBurgerMenu() {
         burgerButton.click();
-        return new BurgerMenu(driver, getSearchContext());
+        return new BurgerMenu(getDriver(), burgerMenuContainer);
     }
 
     public void openSearchMenu() {
@@ -55,9 +60,10 @@ public class Header extends AbstractUIObject {
         profileButton.click();
     }
 
-    public void openSavedArticlesPage() {
+    public SavedItemsPageBase openSavedArticlesPage() {
         openProfileDropdown();
         savedButton.click();
+        return initPage(getDriver(), SavedItemsPageBase.class);
     }
 
     public void enterSearchQuery(String text) {

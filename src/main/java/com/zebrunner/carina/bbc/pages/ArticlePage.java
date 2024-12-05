@@ -1,5 +1,6 @@
 package com.zebrunner.carina.bbc.pages;
 
+import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.utils.factory.DeviceType;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.WebDriver;
@@ -8,7 +9,10 @@ import org.openqa.selenium.support.FindBy;
 @DeviceType(pageType = DeviceType.Type.DESKTOP, parentClass = ArticlePageBase.class)
 public class ArticlePage extends ArticlePageBase {
     @FindBy(xpath = "//div[contains(@data-component, 'headline-block')]/h1")
-    private ExtendedWebElement header;
+    private ExtendedWebElement headline;
+
+    @FindBy(xpath = "//header")
+    private Header header;
 
     @FindBy(xpath = "//time")
     private ExtendedWebElement time;
@@ -16,19 +20,13 @@ public class ArticlePage extends ArticlePageBase {
     @FindBy(xpath = "//button[@data-testid='saveButton']")
     private ExtendedWebElement saveButton;
 
-    @FindBy(xpath = "//button[text()='Your Account']")
-    private ExtendedWebElement profileDropdown;
-
-    @FindBy(xpath = "//a[@href='https://www.bbc.com/saved']")
-    private ExtendedWebElement savedButton;
-
     public ArticlePage(WebDriver driver) {
         super(driver);
     }
 
     @Override
     public String getHeaderText() {
-        return header.getText();
+        return headline.getText();
     }
 
     @Override
@@ -42,9 +40,7 @@ public class ArticlePage extends ArticlePageBase {
     }
 
     @Override
-    public SavedItemsPageBase openSavedPage() {
-        profileDropdown.click();
-        savedButton.click();
-        return initPage(driver, SavedItemsPageBase.class);
+    public Header getHeader() {
+        return header;
     }
 }
