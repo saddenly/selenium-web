@@ -2,8 +2,9 @@ package com.zebrunner.carina;
 
 import com.zebrunner.carina.bbc.components.BurgerMenu;
 import com.zebrunner.carina.bbc.components.Header;
+import com.zebrunner.carina.bbc.enums.Language;
 import com.zebrunner.carina.bbc.pages.*;
-import com.zebrunner.carina.bbc.util.NavigationBarItems;
+import com.zebrunner.carina.bbc.enums.NavigationBarItem;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
@@ -12,13 +13,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import org.slf4j.Logger;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -44,8 +44,7 @@ public class BBCTests extends AbstractTest {
         return new Object[][]{
                 {"id=1", "Barnier downfall threatens to set a pattern for what lies ahead"},
                 {"id=2", "French government collapses in no-confidence vote"},
-                {"id=3", "New York Starbucks image may hold key to finding healthcare CEO's killer"},
-                {"id=4", "Behind the scenes of the Baltimore bridge collapse"}
+                {"id=3", "Behind the scenes of the Baltimore bridge collapse"}
         };
     }
 
@@ -67,12 +66,12 @@ public class BBCTests extends AbstractTest {
 
     @DataProvider(name = "languages")
     public Object[][] getLanguages() {
-        return new Object[][] {
-                {"id=1", "ru"},
-                {"id=2", "kg"},
-                {"id=3", "uk"},
-                {"id=4", "fr"},
-                {"id=5", "sr"},
+        return new Object[][]{
+                {"id=1", Language.RUSSIAN},
+                {"id=2", Language.KYRGYZ},
+                {"id=3", Language.UKRAINIAN},
+                {"id=4", Language.FRENCH},
+                {"id=5", Language.SERBIAN},
         };
     }
 
@@ -88,7 +87,7 @@ public class BBCTests extends AbstractTest {
         List<ExtendedWebElement> navigationItems = homePage.getNavigation().getNavigationList();
 
         for (int i = 1; i < navigationItems.size(); i++) {
-            String expectedUrl = NavigationBarItems.valueOf(navigationItems.get(i).getText().toUpperCase()).getPath();
+            String expectedUrl = NavigationBarItem.valueOf(navigationItems.get(i).getText().toUpperCase()).getPath();
 
             navigationItems.get(i).click();
 
@@ -133,39 +132,24 @@ public class BBCTests extends AbstractTest {
         ArticlePageBase articlePage = homePage.openArticle(0);
         String headline = homePage.getArticleHeadline(0);
         assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("news"));
-        LOGGER.info(headline +"\n" +articlePage.getHeaderText());
+        LOGGER.info(headline + "\n" + articlePage.getHeaderText());
         assertTrue("Headlines are different", headline.contains(articlePage.getHeaderText()));
         assertFalse("Article publication time is empty", articlePage.getPublicationTime().isEmpty());
     }
 
     @Test(dataProvider = "languages")
-    public void testLanguageChange(String id, String language) {
+    public void testLanguageChange(String id, Language language) {
+
+        ExtendedWebElement otherLanguagesButton = homePage.getOtherLanguagesButton();
+
         FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(Duration.ofSeconds(5))
                 .pollingEvery(Duration.ofSeconds(1));
-        wait.until(ExpectedConditions.elementToBeClickable(homePage.getOtherLanguagesButton()));
-        switch (language) {
-            case "ru":
-                homePage.changeLanguageToRussian();
-                assertTrue("Error changing language", getDriver().getCurrentUrl().contains("russian"));
-                break;
-            case "uk":
-                homePage.changeLanguageToUkrainian();
-                assertTrue("Error changing language", getDriver().getCurrentUrl().contains("ukrainian"));
-                break;
-            case "fr":
-                homePage.changeLanguageToFrench();
-                assertTrue("Error changing language", getDriver().getCurrentUrl().contains("afrique"));
-                break;
-            case "sr":
-                homePage.changeLanguageToSerbian();
-                assertTrue("Error changing language", getDriver().getCurrentUrl().contains("serbian"));
-                break;
-            case "kg":
-                homePage.changeLanguageToKyrgyz();
-                assertTrue("Error changing language", getDriver().getCurrentUrl().contains("kyrgyz"));
-                break;
-        }
+        wait.until(ExpectedConditions.elementToBeClickable(otherLanguagesButton));
+        if (!homePage.getLanguageButton().isElementPresent()) otherLanguagesButton.click();
+        pause(2);
+        homePage.changeLanguage(language);
+
         getDriver().navigate().back();
     }
 

@@ -1,6 +1,6 @@
-package com.zebrunner.carina.bbc.util;
+package com.zebrunner.carina.bbc.enums;
 
-public enum NavigationBarItems {
+public enum NavigationBarItem {
     HOME("Home","/"),
     NEWS("News","/news"),
     SPORT("Sport","/sport"),
@@ -16,7 +16,7 @@ public enum NavigationBarItems {
     private final String name;
     private final String path;
 
-    NavigationBarItems(String name, String path) {
+    NavigationBarItem(String name, String path) {
         this.name = name;
         this.path = path;
     }

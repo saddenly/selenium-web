@@ -2,6 +2,7 @@ package com.zebrunner.carina.bbc.pages;
 
 import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
+import com.zebrunner.carina.bbc.enums.Language;
 import com.zebrunner.carina.utils.factory.DeviceType;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.WebDriver;
@@ -36,20 +37,8 @@ public class HomePage extends HomePageBase {
     @FindBy(xpath = "//footer//button[text()]")
     private ExtendedWebElement otherLanguagesButton;
 
-    @FindBy(xpath = "//a[text()='Russian НА РУССКОМ']")
-    private ExtendedWebElement russianLanguageButton;
-
-    @FindBy(xpath = "//a[text()='Kyrgyz Кыргыз']")
-    private ExtendedWebElement kyrgyzLanguageButton;
-
-    @FindBy(xpath = "//a[text()='Ukrainian УКРАЇНСЬКA']")
-    private ExtendedWebElement ukrainianLanguageButton;
-
-    @FindBy(xpath = "//a[text()='French AFRIQUE']")
-    private ExtendedWebElement frenchLanguageButton;
-
-    @FindBy(xpath = "//a[text()='Serbian NA SRPSKOM']")
-    private ExtendedWebElement serbianLanguageButton;
+    @FindBy(xpath = "//a[text()='%s']")
+    private ExtendedWebElement languageButton;
 
     public HomePage(WebDriver driver) {
         super(driver);
@@ -60,7 +49,7 @@ public class HomePage extends HomePageBase {
                 .withTimeout(Duration.ofSeconds(10))
                 .pollingEvery(Duration.ofSeconds(1));
         getDriver().switchTo().frame("sp_message_iframe_1192447");
-        wait.until(ExpectedConditions.visibilityOf(agreeToCookiesButton));
+        wait.until(ExpectedConditions.elementToBeClickable(agreeToCookiesButton));
 
         agreeToCookiesButton.click();
         getDriver().switchTo().parentFrame();
@@ -77,29 +66,8 @@ public class HomePage extends HomePageBase {
         return articlesHeadlines.get(index).getText();
     }
 
-    public void changeLanguageToRussian() {
-        otherLanguagesButton.click();
-        russianLanguageButton.click();
-    }
-
-    public void changeLanguageToKyrgyz() {
-        otherLanguagesButton.click();
-        kyrgyzLanguageButton.click();
-    }
-
-    public void changeLanguageToUkrainian() {
-        otherLanguagesButton.click();
-        ukrainianLanguageButton.click();
-    }
-
-    public void changeLanguageToFrench() {
-        otherLanguagesButton.click();
-        frenchLanguageButton.click();
-    }
-
-    public void changeLanguageToSerbian() {
-        otherLanguagesButton.click();
-        serbianLanguageButton.click();
+    public void changeLanguage(Language language) {
+        languageButton.format(language.getUrl()).click();
     }
 
     @Override
@@ -114,5 +82,10 @@ public class HomePage extends HomePageBase {
     @Override
     public ExtendedWebElement getOtherLanguagesButton() {
         return otherLanguagesButton;
+    }
+
+    @Override
+    public ExtendedWebElement getLanguageButton() {
+        return languageButton.format(Language.RUSSIAN.getUrl());
     }
 }
