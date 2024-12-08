@@ -11,31 +11,31 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class Header extends AbstractUIObject {
-    @FindBy(xpath = "//button[@aria-label='Open menu']")
+    @FindBy(xpath = ".//button[@aria-label='Open menu']")
     private ExtendedWebElement burgerButton;
 
     @FindBy(xpath = "//div[@data-testid='drawer-background']/div")
-    private ExtendedWebElement burgerMenuContainer;
+    private BurgerMenu burgerMenuContainer;
 
-    @FindBy(xpath = "//button[@aria-label='Search BBC']")
+    @FindBy(xpath = ".//button[@aria-label='Search BBC']")
     private ExtendedWebElement searchMenuButton;
 
-    @FindBy(xpath = "//input[@data-testid='search-input-field']")
+    @FindBy(xpath = ".//input[@data-testid='search-input-field']")
     private ExtendedWebElement searchInput;
 
-    @FindBy(xpath = "//button[@data-testid='search-input-search-button']")
+    @FindBy(xpath = ".//button[@data-testid='search-input-search-button']")
     private ExtendedWebElement searchButton;
 
-    @FindBy(xpath = "//button[@aria-label='Register']")
+    @FindBy(xpath = ".//button[@aria-label='Register']")
     private ExtendedWebElement registerButton;
 
-    @FindBy(xpath = "//button[@aria-label='Sign In']")
+    @FindBy(xpath = ".//button[@aria-label='Sign In']")
     private ExtendedWebElement signInButton;
 
-    @FindBy(xpath = "//button[text()='Your Account']")
+    @FindBy(xpath = ".//button[text()='Your Account']")
     private ExtendedWebElement profileButton;
 
-    @FindBy(xpath = "//a[@href='https://www.bbc.com/saved']")
+    @FindBy(xpath = ".//a[@href='https://www.bbc.com/saved']")
     private ExtendedWebElement savedButton;
 
     public Header(WebDriver driver, SearchContext searchContext) {
@@ -44,7 +44,7 @@ public class Header extends AbstractUIObject {
 
     public BurgerMenu openBurgerMenu() {
         burgerButton.click();
-        return new BurgerMenu(getDriver(), burgerMenuContainer);
+        return burgerMenuContainer;
     }
 
     public void openSearchMenu() {
@@ -61,7 +61,6 @@ public class Header extends AbstractUIObject {
     }
 
     public SavedItemsPageBase openSavedArticlesPage() {
-        openProfileDropdown();
         savedButton.click();
         return initPage(getDriver(), SavedItemsPageBase.class);
     }

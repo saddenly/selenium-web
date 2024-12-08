@@ -1,5 +1,6 @@
 package com.zebrunner.carina.bbc.pages;
 
+import com.zebrunner.carina.bbc.components.EdinburghArticleCard;
 import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.bbc.enums.Language;
@@ -27,6 +28,9 @@ public class HomePage extends HomePageBase {
 
     @FindBy(xpath = "//span[text()='Yes, I agree']")
     private ExtendedWebElement agreeToCookiesSpan;
+
+    @FindBy(xpath = "//div[@data-testid='edinburgh-article']")
+    private List<EdinburghArticleCard> edinburghArticleCards;
 
     @FindBy(xpath = "//a[contains(@href, 'news/articles')]")
     private List<ExtendedWebElement> newsArticles;
@@ -87,5 +91,10 @@ public class HomePage extends HomePageBase {
     @Override
     public ExtendedWebElement getLanguageButton() {
         return languageButton.format(Language.RUSSIAN.getUrl());
+    }
+
+    @Override
+    public List<EdinburghArticleCard> getEdinburghArticleCards() {
+        return edinburghArticleCards;
     }
 }

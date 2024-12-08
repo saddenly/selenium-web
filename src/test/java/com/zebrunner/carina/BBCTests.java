@@ -1,7 +1,6 @@
 package com.zebrunner.carina;
 
-import com.zebrunner.carina.bbc.components.BurgerMenu;
-import com.zebrunner.carina.bbc.components.Header;
+import com.zebrunner.carina.bbc.components.*;
 import com.zebrunner.carina.bbc.enums.Language;
 import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.bbc.enums.NavigationBarItem;
@@ -84,12 +83,13 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testNavigationBar() {
-        List<ExtendedWebElement> navigationItems = homePage.getNavigation().getNavigationList();
+        Navigation navigation = homePage.getNavigation();
+        List<ExtendedWebElement> navigationItems = navigation.getNavigationList();
 
         for (int i = 1; i < navigationItems.size(); i++) {
-            String expectedUrl = NavigationBarItem.valueOf(navigationItems.get(i).getText().toUpperCase()).getPath();
+            String expectedUrl = NavigationBarItem.values()[i].getPath();
 
-            navigationItems.get(i).click();
+            navigation.getItem(i + 1).click();
 
             String currentUrl = getDriver().getCurrentUrl();
 
@@ -128,11 +128,11 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testArticlePage() {
-
-        ArticlePageBase articlePage = homePage.openArticle(0);
-        String headline = homePage.getArticleHeadline(0);
-        assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("news"));
-        LOGGER.info(headline + "\n" + articlePage.getHeaderText());
+        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
+        String headline = articleCard.getCardHeadline().getText();
+        articleCard.click();
+        ArticlePageBase articlePage = articleCard.openArticlePage();
+        assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("articles"));
         assertTrue("Headlines are different", headline.contains(articlePage.getHeaderText()));
         assertFalse("Article publication time is empty", articlePage.getPublicationTime().isEmpty());
     }
@@ -169,18 +169,26 @@ public class BBCTests extends AbstractTest {
 
         BurgerMenu burgerMenu = homePage.getHeader().openBurgerMenu();
         NewsletterPageBase newsletterPage = burgerMenu.openNewsletterPage();
-        newsletterPage.subscribeToNewsletter();
+        pause(2);
+        NewsletterCard card = newsletterPage.getNewsletterCard(5);
+        card.getNewsletterSwitch().click();
+        pause(2);
+        newsletterPage.getSubscribeButton().click();
+        pause(5);
+
         assertTrue("Confirmation message was not displayed", newsletterPage.getConfirmationMessage().isDisplayed());
-        //does not work
     }
 
     @Test(dataProvider = "loginCredentials")
     public void testSaveFunctionality(String id, String login, String password) {
         LoginPageBase loginPage = homePage.getHeader().openLoginPage();
         homePage = loginPage.login(login, password);
-        ArticlePageBase articlePage = homePage.openArticle(0);
+        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
+        articleCard.click();
+        ArticlePageBase articlePage = articleCard.openArticlePage();
         articlePage.saveArticle();
         String headline = articlePage.getHeaderText();
+        articlePage.getHeader().openProfileDropdown();
         SavedItemsPageBase savedItemsPage = articlePage.getHeader().openSavedArticlesPage();
         assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> a.getText().contains(headline)));
         assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));

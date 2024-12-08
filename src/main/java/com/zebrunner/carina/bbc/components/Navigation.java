@@ -2,6 +2,7 @@ package com.zebrunner.carina.bbc.components;
 
 import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import com.zebrunner.carina.webdriver.gui.AbstractUIObject;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -43,12 +44,19 @@ public class Navigation extends AbstractUIObject {
     @FindBy(xpath = "//nav[@data-testid='level1-navigation-container']/section/nav/ul/li[11]")
     private ExtendedWebElement live;
 
+    @FindBy(xpath = "//nav[@data-testid='level1-navigation-container']/section/nav/ul/li[%s]")
+    private ExtendedWebElement item;
+
     public Navigation(WebDriver driver, SearchContext searchContext) {
         super(driver, searchContext);
     }
 
     public List<ExtendedWebElement> getNavigationList() {
         return List.of(home, news, sport, business, innovation, culture, arts, travel, earth, video, live);
+    }
+
+    public ExtendedWebElement getItem(int index) {
+        return item.format(index);
     }
 
     public HomePageBase openHomePage() {

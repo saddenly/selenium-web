@@ -1,11 +1,14 @@
 package com.zebrunner.carina.bbc.pages;
 
+import com.zebrunner.carina.bbc.components.EdinburghArticleCard;
 import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.bbc.enums.Language;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
+
+import java.util.List;
 
 public abstract class HomePageBase extends AbstractPage {
     public HomePageBase(WebDriver driver) {
@@ -27,4 +30,6 @@ public abstract class HomePageBase extends AbstractPage {
     public abstract ExtendedWebElement getOtherLanguagesButton();
 
     public abstract ExtendedWebElement getLanguageButton();
+
+    public abstract List<EdinburghArticleCard> getEdinburghArticleCards();
 }

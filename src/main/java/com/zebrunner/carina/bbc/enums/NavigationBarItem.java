@@ -1,23 +1,23 @@
 package com.zebrunner.carina.bbc.enums;
 
 public enum NavigationBarItem {
-    HOME("Home","/"),
-    NEWS("News","/news"),
-    SPORT("Sport","/sport"),
-    BUSINESS("Business","/business"),
-    INNOVATION("Innovation", "/innovation"),
-    CULTURE("Culture", "/culture"),
-    ARTS("Arts", "/arts"),
-    TRAVEL("Travel", "/travel"),
-    EARTH("Earth", "/future-planet"),
-    VIDEO("Video", "/video"),
-    LIVE("Live", "/live"),;
+    HOME("1","/"),
+    NEWS("2","/news"),
+    SPORT("3","/sport"),
+    BUSINESS("4","/business"),
+    INNOVATION("5", "/innovation"),
+    CULTURE("6", "/culture"),
+    ARTS("7", "/arts"),
+    TRAVEL("8", "/travel"),
+    EARTH("9", "/future-planet"),
+    VIDEO("10", "/video"),
+    LIVE("11", "/live"),;
 
-    private final String name;
+    private final String index;
     private final String path;
 
-    NavigationBarItem(String name, String path) {
-        this.name = name;
+    NavigationBarItem(String index, String path) {
+        this.index = index;
         this.path = path;
     }
 
@@ -25,7 +25,7 @@ public enum NavigationBarItem {
         return path;
     }
 
-    public String getName() {
-        return name;
+    public String getIndex() {
+        return index;
     }
 }
