@@ -1,9 +1,10 @@
 package com.zebrunner.carina;
 
 import com.zebrunner.carina.bbc.components.*;
+import com.zebrunner.carina.bbc.enums.FooterNavigationBarItem;
 import com.zebrunner.carina.bbc.enums.Language;
-import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.bbc.enums.NavigationBarItem;
+import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
@@ -49,7 +50,7 @@ public class BBCTests extends AbstractTest {
 
     @DataProvider(name = "invalidSearchQueries")
     public Object[][] getInvalidSearchQueries() {
-        return new Object[][] {
+        return new Object[][]{
                 {"id=1", "22222222222222222222"},
                 {"id=2", "daskofgnjmblvxc"},
                 {"id=3", ".............^^$@%@^$%@"}
@@ -79,6 +80,22 @@ public class BBCTests extends AbstractTest {
         HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Error opening home page");
+    }
+
+    @Test
+    public void testFooterNavigationBar() {
+        FooterNavigation navigation = homePage.getFooter().getFooterNavigation();
+
+        for (FooterNavigationBarItem item : FooterNavigationBarItem.values()) {
+            String expectedUrl = item.getUrl();
+            navigation.getNavigationItem(item).click();
+            String currentUrl = getDriver().getCurrentUrl();
+            assertTrue("URL does not contain expected text: " + expectedUrl, currentUrl.contains(expectedUrl));
+            WebElement mainContent = getDriver().findElement(By.id("main-content"));
+            assertTrue("Main content is not visible", mainContent.isDisplayed());
+            getDriver().navigate().back();
+            navigation = homePage.getFooter().getFooterNavigation();
+        }
     }
 
     @Test
@@ -140,15 +157,15 @@ public class BBCTests extends AbstractTest {
     @Test(dataProvider = "languages")
     public void testLanguageChange(String id, Language language) {
 
-        ExtendedWebElement otherLanguagesButton = homePage.getOtherLanguagesButton();
+        ExtendedWebElement otherLanguagesButton = homePage.getFooter().getOtherLanguagesButton();
 
         FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(Duration.ofSeconds(5))
                 .pollingEvery(Duration.ofSeconds(1));
         wait.until(ExpectedConditions.elementToBeClickable(otherLanguagesButton));
-        if (!homePage.getLanguageButton().isElementPresent()) otherLanguagesButton.click();
+        if (!homePage.getFooter().getLanguageButton(Language.RUSSIAN).isElementPresent()) otherLanguagesButton.click();
         pause(2);
-        homePage.changeLanguage(language);
+        homePage.getFooter().changeLanguage(language);
 
         getDriver().navigate().back();
     }

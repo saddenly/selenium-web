@@ -1,9 +1,9 @@
 package com.zebrunner.carina.bbc.pages;
 
 import com.zebrunner.carina.bbc.components.EdinburghArticleCard;
+import com.zebrunner.carina.bbc.components.Footer;
 import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
-import com.zebrunner.carina.bbc.enums.Language;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
@@ -27,11 +27,8 @@ public abstract class HomePageBase extends AbstractPage {
     @FindBy(xpath = "//div[@data-testid='edinburgh-article']")
     private List<EdinburghArticleCard> edinburghArticleCards;
 
-    @FindBy(xpath = "//a[text()='%s']")
-    private ExtendedWebElement languageButton;
-
-    @FindBy(xpath = "//footer//button[text()]")
-    private ExtendedWebElement otherLanguagesButton;
+    @FindBy(xpath = "//footer")
+    private Footer footer;
 
     public HomePageBase(WebDriver driver) {
         super(driver);
@@ -49,24 +46,16 @@ public abstract class HomePageBase extends AbstractPage {
         agreeToCookiesSpan.click();
     }
 
-    public void changeLanguage(Language language) {
-        languageButton.format(language.getUrl()).click();
-    }
-
     public Header getHeader() {
         return header;
     }
 
-    public ExtendedWebElement getOtherLanguagesButton() {
-        return otherLanguagesButton;
-    }
-
-    public ExtendedWebElement getLanguageButton() {
-        return languageButton.format(Language.RUSSIAN.getUrl());
-    }
-
     public List<EdinburghArticleCard> getEdinburghArticleCards() {
         return edinburghArticleCards;
+    }
+
+    public Footer getFooter() {
+        return footer;
     }
 
     public abstract Navigation getNavigation();
