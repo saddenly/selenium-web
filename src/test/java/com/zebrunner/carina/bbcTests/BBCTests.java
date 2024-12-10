@@ -1,4 +1,4 @@
-package com.zebrunner.carina;
+package com.zebrunner.carina.bbcTests;
 
 import com.zebrunner.carina.bbc.components.*;
 import com.zebrunner.carina.bbc.enums.FooterNavigationBarItem;
@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.lang.invoke.MethodHandles;
@@ -28,9 +29,9 @@ import java.util.stream.Collectors;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
-public class BBCTests extends AbstractTest {
+public abstract class BBCTests extends AbstractTest {
 
-    private HomePageBase homePage;
+    protected HomePageBase homePage;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @BeforeTest
@@ -76,14 +77,14 @@ public class BBCTests extends AbstractTest {
         };
     }
 
-    @Test
+    @Test//mobile+desktop
     public void testOpenPage() {
         HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
         homePage.open();
         Assert.assertTrue(homePage.isPageOpened(), "Error opening home page");
     }
 
-    @Test
+    @Test//mobile+desktop
     public void testFooterNavigationBar() {
         FooterNavigation navigation = homePage.getFooter().getFooterNavigation();
 
@@ -97,29 +98,16 @@ public class BBCTests extends AbstractTest {
         }
     }
 
+    @Ignore
+    @Test//desktop
+    public abstract void testNavigationBar();
+
     @Test
-    public void testNavigationBar() {
-        Navigation navigation = homePage.getNavigation();
-
-        for (NavigationBarItem item : Arrays.stream(NavigationBarItem.values()).skip(1).collect(Collectors.toList())) {
-            String expectedUrl = item.getPath();
-
-            navigation.getItem(item).click();
-
-            String currentUrl = getDriver().getCurrentUrl();
-
-            assertTrue("URL does not contain expected text: " + expectedUrl, currentUrl.contains(expectedUrl));
-
-            WebElement mainContent = getDriver().findElement(By.id("main-content"));
-            assertTrue("Main content is not visible", mainContent.isDisplayed());
-
-            getDriver().navigate().back();
-
-            navigation = homePage.getNavigation();
-        }
+    public void executeTestNavigationBar() {
+        testNavigationBar();
     }
 
-    @Test(dataProvider = "searchQueries")
+    @Test(dataProvider = "searchQueries")//mobile+desktop
     public void testOpenSearchPage(String id, String query) {
         Header header = homePage.getHeader();
         header.openSearchMenu();
@@ -130,7 +118,7 @@ public class BBCTests extends AbstractTest {
         assertTrue("Given query was not found", searchPage.getArticleHeadlines().stream().anyMatch(a -> a.contains(query)));
     }
 
-    @Test(dataProvider = "invalidSearchQueries")
+    @Test(dataProvider = "invalidSearchQueries")//mobile+desktop
     public void testInvalidSearchQueryReturnsNothing(String id, String query) {
         Header header = homePage.getHeader();
         header.openSearchMenu();
@@ -141,7 +129,7 @@ public class BBCTests extends AbstractTest {
         assertFalse("Given query was found", searchPage.getArticleHeadlines().stream().anyMatch(a -> a.contains(query)));
     }
 
-    @Test
+    @Test//mobile+desktop
     public void testArticlePage() {
         EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(2);
         String headline = articleCard.getCardHeadline().getText();
@@ -152,7 +140,7 @@ public class BBCTests extends AbstractTest {
         assertFalse("Article publication time is empty", articlePage.getPublicationTime().isEmpty());
     }
 
-    @Test(dataProvider = "languages")
+    @Test(dataProvider = "languages")//mobile+desktop
     public void testLanguageChange(String id, Language language) {
 
         ExtendedWebElement otherLanguagesButton = homePage.getFooter().getOtherLanguagesButton();
@@ -168,46 +156,28 @@ public class BBCTests extends AbstractTest {
         getDriver().navigate().back();
     }
 
-    @Test(dataProvider = "loginCredentials")
-    public void testLogin(String id, String username, String password) {
-        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
-        assertTrue("URL does not contain 'auth'", loginPage.getCurrentUrl().contains("auth"));
+    @Ignore
+    @Test(dataProvider = "loginCredentials")//desktop
+    public abstract void testLogin(String id, String username, String password);
 
-        homePage = loginPage.login(username, password);
-        assertTrue("Profile button is not visible", homePage.getHeader().isProfileButtonVisible());
+    @Test(dataProvider = "loginCredentials")
+    public void executeTestLogin(String id, String username, String password) {
+        testLogin(id, username, password);
     }
+
+    @Test//desktop
+    public abstract void testNewsletterSubscription();
 
     @Test
-    public void testNewsletterSubscription() {
-        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
-        homePage = loginPage.login(R.TESTDATA.get("user"), R.TESTDATA.get("password"));
-
-        BurgerMenu burgerMenu = homePage.getHeader().openBurgerMenu();
-        NewsletterPageBase newsletterPage = burgerMenu.openNewsletterPage();
-        pause(2);
-        NewsletterCard card = newsletterPage.getNewsletterCard(5);
-        card.getNewsletterSwitch().click();
-        pause(2);
-        newsletterPage.getSubscribeButton().click();
-        pause(5);
-
-        assertTrue("Confirmation message was not displayed", newsletterPage.getConfirmationMessage().isDisplayed());
+    public void executeTestNewsletterSubscription() {
+        testNewsletterSubscription();
     }
+
+    @Test(dataProvider = "loginCredentials")//desktop
+    public abstract void testSaveFunctionality(String id, String login, String password);
 
     @Test(dataProvider = "loginCredentials")
-    public void testSaveFunctionality(String id, String login, String password) {
-        LoginPageBase loginPage = homePage.getHeader().openLoginPage();
-        homePage = loginPage.login(login, password);
-        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
-        articleCard.click();
-        ArticlePageBase articlePage = articleCard.openArticlePage();
-        articlePage.saveArticle();
-        String headline = articlePage.getHeaderText();
-        articlePage.getHeader().openProfileDropdown();
-        SavedItemsPageBase savedItemsPage = articlePage.getHeader().openSavedArticlesPage();
-        pause(2);
-        assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> a.getText().contains(headline)));
-        assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));
+    public void executeTestSaveFunctionality(String id, String login, String password) {
+        testSaveFunctionality(id, login, password);
     }
-
 }
