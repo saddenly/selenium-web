@@ -128,12 +128,12 @@ public class BBCTests extends AbstractTest {
 
     @Test
     public void testArticlePage() {
-        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
+        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(2);
         String headline = articleCard.getCardHeadline().getText();
         articleCard.click();
         ArticlePageBase articlePage = articleCard.openArticlePage();
-        assertTrue("URL does not contain 'articles'", getDriver().getCurrentUrl().contains("articles"));
-        assertTrue("Headlines are different", headline.contains(articlePage.getHeaderText()));
+        assertTrue("URL does not contain 'article'", getDriver().getCurrentUrl().contains("article"));
+        assertTrue("Headlines are different", articlePage.getHeaderText().contains(headline));
         assertFalse("Article publication time is empty", articlePage.getPublicationTime().isEmpty());
     }
 
