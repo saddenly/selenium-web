@@ -20,10 +20,10 @@ public class Header extends AbstractUIObject {
     @FindBy(xpath = ".//button[@aria-label='Search BBC']")
     private ExtendedWebElement searchMenuButton;
 
-    @FindBy(xpath = ".//input[@data-testid='search-input-field']")
+    @FindBy(xpath = "//input[@data-testid='search-input-field']")
     private ExtendedWebElement searchInput;
 
-    @FindBy(xpath = ".//button[@data-testid='search-input-search-button']")
+    @FindBy(xpath = "//button[@data-testid='search-input-search-button']")
     private ExtendedWebElement searchButton;
 
     @FindBy(xpath = ".//button[@aria-label='Register']")

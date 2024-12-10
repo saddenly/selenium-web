@@ -190,6 +190,7 @@ public class BBCTests extends AbstractTest {
         String headline = articlePage.getHeaderText();
         articlePage.getHeader().openProfileDropdown();
         SavedItemsPageBase savedItemsPage = articlePage.getHeader().openSavedArticlesPage();
+        pause(2);
         assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> a.getText().contains(headline)));
         assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));
     }
