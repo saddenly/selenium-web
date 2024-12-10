@@ -75,10 +75,10 @@ public class BBCDesktopTests extends BBCTests {
     }
 
     @Override
-    @Test
-    public void testNewsletterSubscription() {
+    @Test(dataProvider = "loginCredentials")
+    public void testNewsletterSubscription(String id, String username, String password) {
         LoginPageBase loginPage = homePage.getHeader().openLoginPage();
-        homePage = loginPage.login(R.TESTDATA.get("user"), R.TESTDATA.get("password"));
+        homePage = loginPage.login(username, password);
 
         BurgerMenu burgerMenu = homePage.getHeader().openBurgerMenu();
         NewsletterPageBase newsletterPage = burgerMenu.openNewsletterPage();

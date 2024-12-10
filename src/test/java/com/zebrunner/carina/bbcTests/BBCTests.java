@@ -1,16 +1,17 @@
 package com.zebrunner.carina.bbcTests;
 
-import com.zebrunner.carina.bbc.components.*;
+import com.zebrunner.carina.bbc.components.EdinburghArticleCard;
+import com.zebrunner.carina.bbc.components.FooterNavigation;
+import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.enums.FooterNavigationBarItem;
 import com.zebrunner.carina.bbc.enums.Language;
-import com.zebrunner.carina.bbc.enums.NavigationBarItem;
-import com.zebrunner.carina.bbc.pages.*;
+import com.zebrunner.carina.bbc.pages.ArticlePageBase;
+import com.zebrunner.carina.bbc.pages.HomePageBase;
+import com.zebrunner.carina.bbc.pages.SearchPageBase;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
@@ -165,14 +166,16 @@ public abstract class BBCTests extends AbstractTest {
         testLogin(id, username, password);
     }
 
-    @Test//desktop
-    public abstract void testNewsletterSubscription();
+    @Ignore
+    @Test(dataProvider = "loginCredentials")//desktop
+    public abstract void testNewsletterSubscription(String id, String username, String password);
 
-    @Test
-    public void executeTestNewsletterSubscription() {
-        testNewsletterSubscription();
+    @Test(dataProvider = "loginCredentials")
+    public void executeTestNewsletterSubscription(String id, String username, String password) {
+        testNewsletterSubscription(id, username, password);
     }
 
+    @Ignore
     @Test(dataProvider = "loginCredentials")//desktop
     public abstract void testSaveFunctionality(String id, String login, String password);
 
