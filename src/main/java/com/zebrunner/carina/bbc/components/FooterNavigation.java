@@ -16,6 +16,6 @@ public class FooterNavigation extends AbstractUIObject {
     }
 
     public ExtendedWebElement getNavigationItem(FooterNavigationBarItem item) {
-        return navigationItem.format(item);
+        return navigationItem.format(item.getName());
     }
 }

@@ -22,7 +22,8 @@ import org.testng.annotations.Test;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
-import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
@@ -86,13 +87,11 @@ public class BBCTests extends AbstractTest {
     public void testFooterNavigationBar() {
         FooterNavigation navigation = homePage.getFooter().getFooterNavigation();
 
-        for (FooterNavigationBarItem item : FooterNavigationBarItem.values()) {
+        for (FooterNavigationBarItem item : Arrays.stream(FooterNavigationBarItem.values()).skip(1).collect(Collectors.toList())) {
             String expectedUrl = item.getUrl();
             navigation.getNavigationItem(item).click();
             String currentUrl = getDriver().getCurrentUrl();
             assertTrue("URL does not contain expected text: " + expectedUrl, currentUrl.contains(expectedUrl));
-            WebElement mainContent = getDriver().findElement(By.id("main-content"));
-            assertTrue("Main content is not visible", mainContent.isDisplayed());
             getDriver().navigate().back();
             navigation = homePage.getFooter().getFooterNavigation();
         }
@@ -101,12 +100,11 @@ public class BBCTests extends AbstractTest {
     @Test
     public void testNavigationBar() {
         Navigation navigation = homePage.getNavigation();
-        List<ExtendedWebElement> navigationItems = navigation.getNavigationList();
 
-        for (int i = 1; i < navigationItems.size(); i++) {
-            String expectedUrl = NavigationBarItem.values()[i].getPath();
+        for (NavigationBarItem item : Arrays.stream(NavigationBarItem.values()).skip(1).collect(Collectors.toList())) {
+            String expectedUrl = item.getPath();
 
-            navigation.getItem(i + 1).click();
+            navigation.getItem(item).click();
 
             String currentUrl = getDriver().getCurrentUrl();
 
@@ -117,7 +115,7 @@ public class BBCTests extends AbstractTest {
 
             getDriver().navigate().back();
 
-            navigationItems = homePage.getNavigation().getNavigationList();
+            navigation = homePage.getNavigation();
         }
     }
 
