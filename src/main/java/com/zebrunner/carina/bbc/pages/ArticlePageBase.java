@@ -6,7 +6,7 @@ import com.zebrunner.carina.webdriver.gui.AbstractPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
-public abstract class ArticlePageBase extends AbstractPage {
+public abstract class ArticlePageBase extends LoggedInPage {
     @FindBy(xpath = "//div[contains(@data-component, 'headline-block')]/h1")
     private ExtendedWebElement headline;
 

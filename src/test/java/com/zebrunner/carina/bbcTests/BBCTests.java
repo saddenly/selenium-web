@@ -1,23 +1,21 @@
 package com.zebrunner.carina.bbcTests;
 
-import com.zebrunner.carina.bbc.components.EdinburghArticleCard;
-import com.zebrunner.carina.bbc.components.FooterNavigation;
-import com.zebrunner.carina.bbc.components.Header;
+import com.zebrunner.carina.bbc.components.*;
 import com.zebrunner.carina.bbc.enums.FooterNavigationBarItem;
 import com.zebrunner.carina.bbc.enums.Language;
-import com.zebrunner.carina.bbc.pages.ArticlePageBase;
-import com.zebrunner.carina.bbc.pages.HomePageBase;
-import com.zebrunner.carina.bbc.pages.SearchPageBase;
+import com.zebrunner.carina.bbc.enums.NavigationBarItem;
+import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.R;
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -30,16 +28,14 @@ import java.util.stream.Collectors;
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 
-public abstract class BBCTests extends AbstractTest {
-
-    protected HomePageBase homePage;
+public class BBCTests extends AbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @BeforeTest
-    public void setup() {
-        homePage = initPage(getDriver(), HomePageBase.class);
+    public HomePageBase setup() {
+        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
         homePage.open();
         homePage.agreeToCookies();
+        return homePage;
     }
 
     @DataProvider(name = "searchQueries")
@@ -80,13 +76,13 @@ public abstract class BBCTests extends AbstractTest {
 
     @Test//mobile+desktop
     public void testOpenPage() {
-        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
-        homePage.open();
+        HomePageBase homePage = setup();
         Assert.assertTrue(homePage.isPageOpened(), "Error opening home page");
     }
 
     @Test//mobile+desktop
     public void testFooterNavigationBar() {
+        HomePageBase homePage = setup();
         FooterNavigation navigation = homePage.getFooter().getFooterNavigation();
 
         for (FooterNavigationBarItem item : Arrays.stream(FooterNavigationBarItem.values()).skip(1).collect(Collectors.toList())) {
@@ -101,19 +97,37 @@ public abstract class BBCTests extends AbstractTest {
 
     @Ignore
     @Test//desktop
-    public abstract void testNavigationBar();
+    public void testNavigationBar() {
+        HomePageBase homePage = setup();
+        Navigation navigation = homePage.getNavigation();
 
-    @Test
-    public void executeTestNavigationBar() {
-        testNavigationBar();
+        for (NavigationBarItem item : Arrays.stream(NavigationBarItem.values()).skip(1).collect(Collectors.toList())) {
+            String expectedUrl = item.getPath();
+
+            navigation.getItem(item).click();
+
+            String currentUrl = getDriver().getCurrentUrl();
+
+            assertTrue("URL does not contain expected text: " + expectedUrl, currentUrl.contains(expectedUrl));
+
+            WebElement mainContent = getDriver().findElement(By.id("main-content"));
+            assertTrue("Main content is not visible", mainContent.isDisplayed());
+
+            getDriver().navigate().back();
+
+            navigation = homePage.getNavigation();
+        }
     }
 
     @Test(dataProvider = "searchQueries")//mobile+desktop
     public void testOpenSearchPage(String id, String query) {
+        HomePageBase homePage = initPage(getDriver(), HomePageBase.class);
+        homePage.open();
+        homePage.agreeToCookies();
         Header header = homePage.getHeader();
-        header.openSearchMenu();
-        header.enterSearchQuery(query);
-        SearchPageBase searchPage = header.clickSearchButton();
+        BurgerMenu burgerMenu = header.openSearchMenu();
+        burgerMenu.enterSearchQuery(query);
+        SearchPageBase searchPage = burgerMenu.clickSearchButton();
 
         assertTrue("URL does not contain search", searchPage.getCurrentUrl().contains("search"));
         assertTrue("Given query was not found", searchPage.getArticleHeadlines().stream().anyMatch(a -> a.contains(query)));
@@ -121,17 +135,18 @@ public abstract class BBCTests extends AbstractTest {
 
     @Test(dataProvider = "invalidSearchQueries")//mobile+desktop
     public void testInvalidSearchQueryReturnsNothing(String id, String query) {
-        Header header = homePage.getHeader();
-        header.openSearchMenu();
-        header.enterSearchQuery(query);
+        HomePageBase homePage = setup();
+        BurgerMenu burgerMenu = homePage.getHeader().openSearchMenu();
+        burgerMenu.enterSearchQuery(query);
 
-        SearchPageBase searchPage = header.clickSearchButton();
+        SearchPageBase searchPage = burgerMenu.clickSearchButton();
         assertTrue("URL does not contain search", searchPage.getCurrentUrl().contains("search"));
         assertFalse("Given query was found", searchPage.getArticleHeadlines().stream().anyMatch(a -> a.contains(query)));
     }
 
     @Test//mobile+desktop
     public void testArticlePage() {
+        HomePageBase homePage = setup();
         EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(2);
         String headline = articleCard.getCardHeadline().getText();
         articleCard.click();
@@ -143,7 +158,7 @@ public abstract class BBCTests extends AbstractTest {
 
     @Test(dataProvider = "languages")//mobile+desktop
     public void testLanguageChange(String id, Language language) {
-
+        HomePageBase homePage = setup();
         ExtendedWebElement otherLanguagesButton = homePage.getFooter().getOtherLanguagesButton();
 
         FluentWait<WebDriver> wait = new FluentWait<>(getDriver())
@@ -159,28 +174,48 @@ public abstract class BBCTests extends AbstractTest {
 
     @Ignore
     @Test(dataProvider = "loginCredentials")//desktop
-    public abstract void testLogin(String id, String username, String password);
+    public void testLogin(String id, String username, String password) {
+        HomePageBase homePage = setup();
+        LoginPageBase loginPage = homePage.openLoginPage();
+        assertTrue("URL does not contain 'auth'", loginPage.getCurrentUrl().contains("auth"));
 
-    @Test(dataProvider = "loginCredentials")
-    public void executeTestLogin(String id, String username, String password) {
-        testLogin(id, username, password);
+        homePage = loginPage.login(username, password);
+        assertTrue("Log in was not successful", homePage.isLoggedIn());
     }
 
     @Ignore
     @Test(dataProvider = "loginCredentials")//desktop
-    public abstract void testNewsletterSubscription(String id, String username, String password);
+    public void testNewsletterSubscription(String id, String username, String password) {
+        HomePageBase homePage = setup();
+        LoginPageBase loginPage = homePage.openLoginPage();
+        homePage = loginPage.login(username, password);
 
-    @Test(dataProvider = "loginCredentials")
-    public void executeTestNewsletterSubscription(String id, String username, String password) {
-        testNewsletterSubscription(id, username, password);
+        BurgerMenu burgerMenu = homePage.getHeader().openBurgerMenu();
+        NewsletterPageBase newsletterPage = burgerMenu.openNewsletterPage();
+        pause(2);
+        NewsletterCard card = newsletterPage.getNewsletterCard(5);
+        card.getNewsletterSwitch().click();
+        pause(2);
+        newsletterPage.getSubscribeButton().click();
+        pause(5);
+
+        assertTrue("Confirmation message was not displayed", newsletterPage.getConfirmationMessage().isDisplayed());
     }
 
     @Ignore
     @Test(dataProvider = "loginCredentials")//desktop
-    public abstract void testSaveFunctionality(String id, String login, String password);
-
-    @Test(dataProvider = "loginCredentials")
-    public void executeTestSaveFunctionality(String id, String login, String password) {
-        testSaveFunctionality(id, login, password);
+    public void testSaveFunctionality(String id, String login, String password) {
+        HomePageBase homePage = setup();
+        LoginPageBase loginPage = homePage.openLoginPage();
+        homePage = loginPage.login(login, password);
+        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
+        articleCard.click();
+        ArticlePageBase articlePage = articleCard.openArticlePage();
+        articlePage.saveArticle();
+        String headline = articlePage.getHeaderText();
+        SavedItemsPageBase savedItemsPage = articlePage.openSavedItemsPage();
+        pause(2);
+        assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> a.getText().contains(headline)));
+        assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));
     }
 }

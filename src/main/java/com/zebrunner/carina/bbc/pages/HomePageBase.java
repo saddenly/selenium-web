@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.time.Duration;
 import java.util.List;
 
-public abstract class HomePageBase extends AbstractPage {
+public abstract class HomePageBase extends LoggedInPage {
     @FindBy(xpath = "//header")
     private Header header;
 
@@ -46,7 +46,7 @@ public abstract class HomePageBase extends AbstractPage {
         agreeToCookiesSpan.click();
     }
 
-    public Header getHeader() {
+    public Header getHeader(){
         return header;
     }
 
@@ -59,4 +59,8 @@ public abstract class HomePageBase extends AbstractPage {
     }
 
     public abstract Navigation getNavigation();
+
+    public abstract LoginPageBase openLoginPage();
+
+    public abstract boolean isLoggedIn();
 }
