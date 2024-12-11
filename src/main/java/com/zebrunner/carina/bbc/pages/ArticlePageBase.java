@@ -16,9 +16,6 @@ public abstract class ArticlePageBase extends LoggedInPage {
     @FindBy(xpath = "//time")
     private ExtendedWebElement time;
 
-    @FindBy(xpath = "//button[@data-testid='saveButton']")
-    private ExtendedWebElement saveButton;
-
     public ArticlePageBase(WebDriver driver) {
         super(driver);
     }
@@ -31,11 +28,11 @@ public abstract class ArticlePageBase extends LoggedInPage {
         return time.getText();
     }
 
-    public void saveArticle() {
-        saveButton.click();
-    }
-
     public Header getHeader() {
         return header;
     }
+
+    public abstract void saveArticle();
+
+    public abstract ExtendedWebElement getSaveButton();
 }

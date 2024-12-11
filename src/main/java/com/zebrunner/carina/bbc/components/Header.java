@@ -7,8 +7,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
 public class Header extends AbstractUIObject {
+    @FindBy(xpath = ".//div[@data-testid='anchor-inner-wrapper']//a[@href='/']")
+    private ExtendedWebElement logo;
+
     @FindBy(xpath = ".//button[@aria-label='Open menu']")
-    private ExtendedWebElement burgerButton;
+    protected ExtendedWebElement burgerButton;
 
     @FindBy(xpath = "//div[@data-testid='drawer-background']/div")
     private BurgerMenu burgerMenuContainer;

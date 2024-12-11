@@ -13,11 +13,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.lang.invoke.MethodHandles;
@@ -95,7 +95,6 @@ public class BBCTests extends AbstractTest {
         }
     }
 
-    @Ignore
     @Test//desktop
     public void testNavigationBar() {
         HomePageBase homePage = setup();
@@ -172,8 +171,7 @@ public class BBCTests extends AbstractTest {
         getDriver().navigate().back();
     }
 
-    @Ignore
-    @Test(dataProvider = "loginCredentials")//desktop
+    @Test(dataProvider = "loginCredentials")//desktop + mobile
     public void testLogin(String id, String username, String password) {
         HomePageBase homePage = setup();
         LoginPageBase loginPage = homePage.openLoginPage();
@@ -183,7 +181,6 @@ public class BBCTests extends AbstractTest {
         assertTrue("Log in was not successful", homePage.isLoggedIn());
     }
 
-    @Ignore
     @Test(dataProvider = "loginCredentials")//desktop
     public void testNewsletterSubscription(String id, String username, String password) {
         HomePageBase homePage = setup();
@@ -202,20 +199,23 @@ public class BBCTests extends AbstractTest {
         assertTrue("Confirmation message was not displayed", newsletterPage.getConfirmationMessage().isDisplayed());
     }
 
-    @Ignore
-    @Test(dataProvider = "loginCredentials")//desktop
+    @Test(dataProvider = "loginCredentials")//desktop + mobile
     public void testSaveFunctionality(String id, String login, String password) {
         HomePageBase homePage = setup();
         LoginPageBase loginPage = homePage.openLoginPage();
         homePage = loginPage.login(login, password);
-        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(0);
+        EdinburghArticleCard articleCard = homePage.getEdinburghArticleCards().get(2);
+        String headline = articleCard.getCardHeadline().getText();
         articleCard.click();
         ArticlePageBase articlePage = articleCard.openArticlePage();
-        articlePage.saveArticle();
-        String headline = articlePage.getHeaderText();
-        SavedItemsPageBase savedItemsPage = articlePage.openSavedItemsPage();
         pause(2);
-        assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> a.getText().contains(headline)));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.elementToBeClickable(articlePage.getSaveButton()));
+        articlePage.saveArticle();
+        pause(10);
+        SavedItemsPageBase savedItemsPage = articlePage.openSavedItemsPage();
+        wait.until(ExpectedConditions.elementToBeClickable(savedItemsPage.getSavedItems().get(0)));
+        assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> headline.contains(a.getText())));
         assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));
     }
 }

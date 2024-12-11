@@ -1,12 +1,12 @@
 package com.zebrunner.carina.bbc.pages.mobile;
 
-import com.zebrunner.carina.bbc.components.Header;
 import com.zebrunner.carina.bbc.components.Navigation;
 import com.zebrunner.carina.bbc.components.mobile.HeaderMobile;
 import com.zebrunner.carina.bbc.pages.HomePageBase;
 import com.zebrunner.carina.bbc.pages.LoginPageBase;
 import com.zebrunner.carina.bbc.pages.SavedItemsPageBase;
 import com.zebrunner.carina.utils.factory.DeviceType;
+import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
@@ -28,21 +28,19 @@ public class HomePageMobile extends HomePageBase {
         return null;
     }
 
-    //TODO: BURGER MENU SAVED ITEMS RETURN PAGE
     @Override
     public SavedItemsPageBase openSavedItemsPage() {
-        return null;
+        return header.openBurgerMenu().openSavedItemsPage();
     }
 
-    //TODO: BURGER MENU LOGIN
     @Override
     public LoginPageBase openLoginPage() {
-        return null;
+        return header.openBurgerMenu().openLoginPage();
     }
 
     //TODO: BURGER MENU RETURN SAVED BUTTON VISIBLE
     @Override
     public boolean isLoggedIn() {
-        return false;
+        return header.openBurgerMenu().getSavedButton().isDisplayed();
     }
 }
