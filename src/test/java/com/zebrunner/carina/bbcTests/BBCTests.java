@@ -1,9 +1,7 @@
 package com.zebrunner.carina.bbcTests;
 
 import com.zebrunner.carina.bbc.components.*;
-import com.zebrunner.carina.bbc.enums.FooterNavigationBarItem;
-import com.zebrunner.carina.bbc.enums.Language;
-import com.zebrunner.carina.bbc.enums.NavigationBarItem;
+import com.zebrunner.carina.bbc.enums.*;
 import com.zebrunner.carina.bbc.pages.*;
 import com.zebrunner.carina.core.AbstractTest;
 import com.zebrunner.carina.utils.R;
@@ -71,6 +69,16 @@ public class BBCTests extends AbstractTest {
                 {"id=3", Language.UKRAINIAN},
                 {"id=4", Language.FRENCH},
                 {"id=5", Language.SERBIAN},
+        };
+    }
+
+    @DataProvider(name = "footerSocials")
+    public Object[][] getFooterSocials() {
+        return new Object[][]{
+                {"id=1", FooterSocial.X, SocialSection.X_NEWS},
+                {"id=2", FooterSocial.X, SocialSection.X_EARTH},
+                {"id=3", FooterSocial.FACEBOOK, SocialSection.FACEBOOK_CULTURE},
+                {"id=4", FooterSocial.INSTAGRAM, SocialSection.INSTAGRAM_BREAKING}
         };
     }
 
@@ -217,5 +225,15 @@ public class BBCTests extends AbstractTest {
         wait.until(ExpectedConditions.elementToBeClickable(savedItemsPage.getSavedItems().get(0)));
         assertTrue("Saved article is not present", savedItemsPage.getSavedItemsHeadlines().stream().anyMatch(a -> headline.contains(a.getText())));
         assertTrue("Saved item is not displayed", savedItemsPage.getSavedItems().stream().allMatch(ExtendedWebElement::isDisplayed));
+    }
+
+    @Test(dataProvider = "footerSocials")// desktop + mobile
+    public void testFooterSocials(String id, FooterSocial footerSocial, SocialSection socialSection) {
+        HomePageBase homePage = setup();
+        Footer footer = homePage.getFooter();
+        footer.getSocialButton(footerSocial).click();
+        footer.getSocialSectionButton(footerSocial, socialSection).click();
+        getDriver().switchTo().window(getDriver().getWindowHandles().toArray()[1].toString());
+        assertTrue("The url is not correct", getDriver().getCurrentUrl().contains(socialSection.getUrl()));
     }
 }
